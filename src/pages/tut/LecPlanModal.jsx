@@ -34,7 +34,6 @@ const LecPlanModal = ({ id, idlist, modalAction, roomlist, setModalAction }) => 
 
         axios.post('/tut/fLecInfo.do', params).then((res) => {
             setLecInfo(res.data.lec_info);
-            console.log(res.data.lec_info)
             setWeeklyPlan(res.data.week_plan);
 
         }).catch((e) => {
@@ -65,10 +64,6 @@ const LecPlanModal = ({ id, idlist, modalAction, roomlist, setModalAction }) => 
             console.log("뭔가 있습니다." + week[0]);
         }
         else {
-            console.log("비었습니다." + week[0]);
-            console.log("week2를 봅시다: " + week2);
-            console.log("week2의 길이: ", week2.length)
-
             for (let i = 0; i < week2.length; i++) {
                 weekParams.append('week[]', week2[i]);
                 weekParams.append('learn_goal[]', goalArray[i]);
@@ -123,6 +118,7 @@ const LecPlanModal = ({ id, idlist, modalAction, roomlist, setModalAction }) => 
         arrayAdd.push({ "week": weekCnt }); //추가 버튼 클릭 즉시 눈에 보여야 할 출력용 배열
         joocha.push(weekCnt); //새로 생성된 'n주차' 값들을 API에 전달하기 위해 배열 변수에 따로 보관
 
+
         setWeek(joocha);
         setWeeklyPlan(arrayAdd);
     }
@@ -148,6 +144,22 @@ const LecPlanModal = ({ id, idlist, modalAction, roomlist, setModalAction }) => 
 
     }
 
+    const clear = () => {
+        const value = {
+            lec_id: "",
+            lec_type_id: "",
+            lec_name: "",
+            name: "",
+            tel: "",
+            mail: "",
+            lecrm_name: "",
+            tutor_id: "",
+            lec_sort: ""
+        }
+        setLecInfo(value);
+        setWeeklyPlan([]);
+    }
+
     return (
         <div>
             <Modal
@@ -166,8 +178,8 @@ const LecPlanModal = ({ id, idlist, modalAction, roomlist, setModalAction }) => 
                                     과목 <span className="font_red">*</span>
                                 </th>
                                 <td>
-                                    <select onChange={(e) => setSubject(e.target.value)} >
-                                        <option value={null}>
+                                    <select onChange={(e) => e.target.value == 100 ? clear() : setSubject(e.target.value)} >
+                                        <option value={100} >
                                             과목 선택
                                         </option>
                                         {idlist.map((item, i) => {
@@ -339,12 +351,12 @@ const LecPlanModal = ({ id, idlist, modalAction, roomlist, setModalAction }) => 
                                             {item.week}
                                         </td>
                                         <td>
-                                            <input onChange={(e) => (goalArray[i] = e.target.value)}
+                                            <input onInput={(e) => (e.target.value === "" ? null : goalArray[i] = e.target.value)}
                                                 defaultValue={item.learn_goal}>
                                             </input>
                                         </td>
                                         <td >
-                                            <input onChange={(e) => (conArray[i] = e.target.value)}
+                                            <input onInput={(e) => (conArray[i] = e.target.value)}
                                                 defaultValue={item.learn_con}>
                                             </input>
                                         </td>
