@@ -1,11 +1,14 @@
 import React, { useState, useLayoutEffect } from "react";
-import logo_img from "../../assets/images/admin/login/logo_img.png";
 import { useNavigate, Link } from "react-router-dom";
+import logo_img from "../../assets/images/admin/login/logo_img.png";
+import ModalMyPage from "../../pages/login/ModalMyPage";
+
 
 const LeftMenu = () => {
   const [loginId, setLoginId] = useState("");
   const [loginNm, setLoginNm] = useState("");
   const [menuList, setMenuList] = useState([]);
+  const [myPageModalOn, setMyPageModalOn] = useState(false);
   const navigate = useNavigate();
 
   const menuClick = (e) => {
@@ -84,6 +87,10 @@ const LeftMenu = () => {
     return nodeList;
   };
 
+  const mypageproc = () => {
+    setMyPageModalOn(true);
+  };
+
   const logoutproc = () => {
     console.log(sessionStorage.getItem("loginInfo2"));
     if (window.confirm("로그아웃?")) {
@@ -103,15 +110,22 @@ const LeftMenu = () => {
         </div>
       </div>
       <div className="login">
-        <span className="LoginName">
-          {loginId} {loginNm}
-        </span>
-        <div className="btn_loginArea">
+        <div className="left">
+          <img src="/images/admin/comm/left_myImg.jpg" class="LoginImg" alt="사진"/>
+          <span className="LoginName">
+            {loginId} {loginNm}
+          </span>
+        </div>
+        <div className="right">
+          <a href="#!" className="mypage" onClick={mypageproc} name="modal">
+            <span style={{ cursor: "pointer"}}>MYPAGE</span>
+          </a><br/>
           <a href="#!" className="logout" onClick={logoutproc} name="modal">
-            <span style={{ cursor: "pointer" }}>LOGOUT</span>
+            <span style={{ cursor: "pointer"}}>LOGOUT</span>
           </a>
         </div>
       </div>
+    
       <ul className="lnbMenu">
         {menuList.map((list, index) => {
           let menuName = "a" + index;
@@ -137,6 +151,9 @@ const LeftMenu = () => {
           );
         })}
       </ul>
+      {myPageModalOn? <ModalMyPage modalAction={myPageModalOn} 
+                                   setModalAction={setMyPageModalOn}
+                                   ></ModalMyPage> : null}
     </>
   );
 };

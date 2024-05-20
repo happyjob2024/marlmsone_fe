@@ -16,9 +16,9 @@ const ModalProjectDetail = (props) => {
 
     useEffect(() => {
 
-        console.log("ModalProjectDetail> props.requestAction=" + props.requestAction + ", props.id=" + props.id);
+        console.log("ModalProjectDetail> props.requestAction=" + props.requestAction);
         if (props.requestAction === "U") {
-            searchProjectDetail(props.id);
+            // searchUserInfo(props.id);
         }
         if (props.requestAction === "I") {
             setSelinfo(prevSelinfo => ({
