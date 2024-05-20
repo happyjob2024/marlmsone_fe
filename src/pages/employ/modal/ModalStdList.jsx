@@ -74,6 +74,7 @@ const ModalStdList = (props) => {
                         alert(res.data.resultMsg);
                         // props.setCurrentPage(1);
                         close();
+                        window.location.reload();
                     } else {
                         alert(res.data.resultMsg);
                         close();
