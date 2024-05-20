@@ -3,13 +3,13 @@ import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import Session from "react-session-api";
 import logo_img from "../assets/images/admin/login/logo_img.png";
-import ModalRegister from "./login/ModalRegister";
 import "../assets/css/admin/common.css";
+import ModalRegisterUser from "./login/ModalRegisterUser";
 
 
 const Login = () => {
 
-  const [registerModalOn, setRegisterModalOn] = useState(false);
+  const [registerUserModalOn, setRegisterUserModalOn] = useState(false);
 
   useEffect(() => {
     console.log("Login useEffect start");
@@ -35,7 +35,7 @@ const Login = () => {
   };
   
   const register = () => {
-    setRegisterModalOn(true);
+    setRegisterUserModalOn(true);
   }
 
   //input에 입력될 때마다 account state값 변경되게 하는 함수
@@ -170,8 +170,9 @@ const Login = () => {
             </fieldset>
           </div>
         </div>
-        {ModalRegister? <ModalRegister modalAction={registerModalOn} 
-                                       setModalAction={setRegisterModalOn}></ModalRegister> : null}
+        {registerUserModalOn? <ModalRegisterUser modalAction={registerUserModalOn} 
+                                                 setModalAction={setRegisterUserModalOn}
+                                                 ></ModalRegisterUser> : null}
       </div>
     </>
   );

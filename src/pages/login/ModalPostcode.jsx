@@ -10,10 +10,14 @@ const ModalPostcode = (props) => {
 
     const handleComplete = (data) => {
         props.setSelinfo({...props.selinfo, 
-                          user_zipcode: data.zonecode,
-                          user_address: data.address,
+                          zipcode: data.zonecode,
+                          addr: data.address,
                         });
         props.inputDetailAddress.current.focus();
+        props.setModalAction(false);
+    }
+
+    const close = () => {
         props.setModalAction(false);
     }
 
@@ -38,6 +42,9 @@ const ModalPostcode = (props) => {
                 appElement={document.getElementById('app')}
             >
                 <DaumPostcode onComplete={handleComplete} />
+                <div className="modal-button">                        
+                    <button className="btn btn-primary mx-2" onClick={close}>닫기</button>
+                </div>
             </Modal>{/* End 우편번호 찾기 모달 */}
         </div>
     )  
