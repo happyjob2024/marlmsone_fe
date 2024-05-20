@@ -4,6 +4,7 @@ import Pagination from "../../components/common/Pagination";
 import CheckStdList from "./list/CheckStdList";
 import * as commonjs from "../../components/common/commonfunction.js";
 import { useNavigate } from "react-router-dom";
+import SelectBox from "../../components/common/SelectBox"
 
 // import Modal from "react-modal";
 
@@ -47,22 +48,6 @@ const CheckGrades = () => {
         { value: "lec_name", name: "강의명"},
         { value: "test_name", name: "시험명"},
     ];
-    
-    const SelectBox = (props) => {
-        return (
-            <select
-                id="searchSelectBox"
-                value={selected}
-                onChange={changeSelected}
-            >
-                {props.options.map((option) => (
-                    <option key={option.value} value={option.value}>
-                        {option.name}
-                    </option>
-                ))}
-            </select>
-        )
-    }
 
     const changeSelected = (event) => {
         setSelected(event.target.value);
@@ -109,7 +94,10 @@ const CheckGrades = () => {
             </p>
             <p className="conTitle">
                 <span>시험 목록</span>
-                <SelectBox options={OPTIONS} />
+                <SelectBox
+                    options={OPTIONS}
+                    onChange={setSelected}
+                />
                 <input
                     type="text"
                     id="searchLecTest"
@@ -150,7 +138,12 @@ const CheckGrades = () => {
                         </tr>
                     </thead>
                     <tbody>
-                            {checkgradeList.map((list) => {
+                        {totalGradeCnt === 0 ? (
+                            <tr>
+                                <td colSpan="6">해당되는 데이터가 없습니다.</td>
+                            </tr> 
+                        ) : (
+                            checkgradeList.map((list) => {
                                 return (
                                         <tr key={list.lec_id}>
                                             <td>{list.lec_name}</td>
@@ -166,7 +159,7 @@ const CheckGrades = () => {
                                             <td>{list.noTest}</td>
                                         </tr>
                                         )
-                                    }
+                                    })
                                 )}
                         </tbody>
                 </table>
