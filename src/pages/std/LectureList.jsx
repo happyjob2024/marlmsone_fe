@@ -12,7 +12,7 @@ const LectureList = () => {
     let blockSize = 10;
 
     const [currentPage, setCurrentPage] = useState(1);
-    const [searchKey, setSearchKey] = useState('');
+    const [searchKey, setSearchKey] = useState('all');
     const searchInput = useRef('');
 
     const [lecList, setLecList] = useState([]);         // 수강가능한 강의목록
@@ -200,9 +200,10 @@ const LectureList = () => {
             </div> {/* End 강사의 강의목록 조회 */}
             {/* {lecStdListOn? <Student></Student> : null} */}
             {lecDtlModalOn? <ModalLecture modalAction={lecDtlModalOn} 
-                                        lecId={selLecId}
-                                        searchList={searchLecInfoList}
-                                        ></ModalLecture> : null}
+                                          setModalAction={setLecDtlModalOn}
+                                          lecId={selLecId}
+                                          searchList={searchLecInfoList}
+                                          ></ModalLecture> : null}
         </div>
     )    
 }
