@@ -4,7 +4,7 @@ import Pagination from "../../components/common/Pagination";
 
 import Modal from "react-modal";
 
-const SamplePage3 = (props) => {
+const TestControl = (props) => {
   
   const [blockSize                           ] = useState(5);     // 
   const [currentPage     , setCurrentPage    ] = useState(1);     // 현재 페이지
@@ -458,4 +458,4 @@ const SamplePage3 = (props) => {
   )
 }
 
-export default SamplePage3
+export default TestControl
