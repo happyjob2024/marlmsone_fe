@@ -2,8 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Pagination from "../../components/common/Pagination";
-import ModalAdvList from "./advice/ModalAdvList";
-import ModalMlecList from "./advice/ModalMlecList";
+// import ModalAdvList from "./advice/ModalAdvList";
+// import ModalMlecList from "./advice/ModalMlecList";
 
 
 const SamplePage9 = () => {
@@ -169,8 +169,10 @@ const SamplePage9 = () => {
                 onClick={adviceList}
               />
 						</div>
+            {/*
             {lectureModal ? <ModalAdvList modalAction={lectureModal} setCurrentPage={setCurrentPage} setModalAction={setLectureModal} id={lecrmId}></ModalAdvList> : null}
             {lectureModal ? <ModalMlecList modalAction={lectureModal} setCurrentPage={setCurrentPage} setModalAction={setLectureModal} id={lecrmId}></ModalMlecList> : null}
+            */}
            
 					</div>
   )
