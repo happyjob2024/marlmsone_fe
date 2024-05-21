@@ -1,23 +1,26 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import axios from "axios";
 import Pagination from "../../../components/common/Pagination";
 import ModalStdList from "../modal/ModalStdList";
 import SelectBox from "../../../components/common/SelectBox";
+// import { StdCntContext } from "../EmploymentInfo";
 
-const EmpstdList = () => {
+const EmpstdList = (props) => {
     const [stdInfoList, setStdInfoList] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [searchInfo, setSearchInfo] = useState("");
-    const [selected, setSelected] = useState("");
+    const [selected, setSelected] = useState("all");
     const [stdTotalcnt, setStdTotalcnt] = useState("");
     const searchStudentList = useRef();
-
+    
     const [registerModalOn, setRegisterModalOn] = useState(false);
     const [stdId, setStdId] = useState("");
+    
+    // const {stdTotalcnt2} = useContext(StdCntContext);
 
     useEffect(() => {
         searchStdList(currentPage);
-    }, [currentPage]);
+    }, [currentPage, props.test]);
 
     const searchStdList = async (cpage) => {
         if (typeof cpage === 'number') {
@@ -140,12 +143,20 @@ const EmpstdList = () => {
                 )}
                 </tbody>
             </table>
+            <Pagination
+                currentPage={currentPage}
+                totalPage={Math.ceil(stdTotalcnt / 5)}
+                pageSize={5}
+                blockSize={5}
+                onClick={setCurrentPage}
+            />
             <ModalStdList
                 modalAction={registerModalOn}
                 id={stdId}
                 setModalAction={setRegisterModalOn}
                 companyId={""}
                 resignDay={""}
+                searchList={searchStdList}
             ></ModalStdList>
         </div>
     );

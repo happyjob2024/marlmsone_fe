@@ -1,9 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, createContext, useContext } from "react";
 import axios from "axios";
 import Pagination from "../../components/common/Pagination";
 import EmpstdList from "./list/EmpstdList.jsx";
 import ModalEmpList from "../employ/modal/ModalStdList";
 import SelectBox from "../../components/common/SelectBox";
+
+// export const StdCntContext = createContext();
 
 const EmploymentInfo = () => {
     const [employmentInfoList, setEmploymentInfoList] = useState([]);
@@ -19,7 +21,7 @@ const EmploymentInfo = () => {
 
     useEffect(() => {
         searchEmploymentList(currentPage);
-    }, [currentPage]);
+    }, [currentPage, totalcnt]);
 
     const searchEmploymentList = async (cpage) => {
         if (typeof cpage !== 'number') {
@@ -42,9 +44,24 @@ const EmploymentInfo = () => {
             });
     };
 
+    const deleteEmploymentInfo = async (std_id) => {
+        let params = new URLSearchParams();
+        params.append("std_id", std_id);
+
+        await axios
+            .post("/employ/delEmploy.do", params)
+            .then((res) => {
+                alert(res.data.resultMsg);
+                searchEmploymentList();
+            })
+            .catch((err) => {
+                alert(err.message);
+            });
+    };
+
     const handleSearch = () => {
         setSearchInfo(searchEmpList.current.value);
-        setCurrentPage(1); // 검색할 때 페이지를 1로 초기화
+        setCurrentPage(1);
         searchEmploymentList(1);
     };
 
@@ -154,7 +171,10 @@ const EmploymentInfo = () => {
                                             <span>수정</span>
                                         </button>
                                         /
-                                        <button className="btn btn-primary">
+                                        <button
+                                            className="btn btn-primary"
+                                            onClick={() => deleteEmploymentInfo(list.std_id)}
+                                        >
                                             <span>삭제</span>
                                         </button>
                                     </td>
@@ -174,10 +194,14 @@ const EmploymentInfo = () => {
                     modalAction={registerModalOn}
                     id={stdId}
                     setModalAction={setRegisterModalOn}
+                    searchList={searchEmploymentList}
                     resignDay={""}
                 />
             </div>
-            <EmpstdList />
+            {/* <StdCntContext.Provider value={{stdTotalcnt2}}> */}
+                <EmpstdList test={totalcnt}/>
+            {/* </StdCntContext.Provider> */}
+            {/* <EmpstdList test={totalcnt}/> */}
         </div>
     );
 };

@@ -10,14 +10,15 @@ const ModalStdList = (props) => {
 
         if (props.id !== null && props.id !== "") {
             console.log("ModalStdList> pros.id=" + props.id);
+            console.log("#### searchList: " + props.searchList);
 
             stdDetail(props.id);
-            return () => {
-                setStdinfo({});
-            }    
+        }
+        return () => {
+            setStdinfo({});
         }
     }, [props.id]);
-
+    //useEffect는 [] 안 상태가 변하면 위의 명령을 실행하게 하는 것
     const modalStyle = {
         content: {
             top: "50%",
@@ -68,16 +69,15 @@ const ModalStdList = (props) => {
             .then((res) => {
                 console.log(res)
 
-                if (res.data.result === "S") {
-                    alert(res.data.resultMsg);
-                    props.setModalAction(false);
-                    
-
+                if (res.data.result === "SUCCESS") {
                     if (action === "I") {
-                        props.setCurrentPage(1);
-                        props.setModalAction(false);
+                        alert(res.data.resultMsg);
+                        // props.setCurrentPage(1);
+                        close();
+                        window.location.reload();
                     } else {
-                        props.setModalAction(false);
+                        alert(res.data.resultMsg);
+                        close();
                     }
                 } else {
                     alert(res.data.resultMsg);
@@ -90,8 +90,9 @@ const ModalStdList = (props) => {
     };
 
     const close = () => {
+        setStdinfo({});
+        props.searchList();
         props.setModalAction(false);
-        setStdinfo()
     }
     
     return (
