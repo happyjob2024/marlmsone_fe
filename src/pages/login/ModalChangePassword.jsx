@@ -13,7 +13,6 @@ const ModalChangePassword = (props) => {
 
 
     useEffect(() => {
-        
         return () => {
             setSelinfo({});
         }

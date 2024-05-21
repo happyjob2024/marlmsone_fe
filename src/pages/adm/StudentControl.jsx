@@ -65,7 +65,7 @@ const StudentControl = () => {
                 //          "user_type":null,"use_yn":null, "name":null,"password":null,
                 //          "tel":null,"sex":null, "mail":null,"addr":null,
                 //          "join_date":null,"regi_num":null,"std_num":null}],"currentPage_lec":1,"pageSize":5}
-                console.log("searchLecInfoList() result console : " + JSON.stringify(res));
+                // console.log("searchLecInfoList() result console : " + JSON.stringify(res));
 
                 setLecTotalCnt(res.data.totalCnt_lec);
                 setLecList(res.data.list_lec);

@@ -9,9 +9,8 @@ const ModalLecture = (props) => {
     
 
     useEffect(() => {
-
         if (props.lecId !== null && props.lecId !== "") {
-            console.log("ModalLecture> props.lecId=" + props.lecId);
+            // console.log("ModalLecture> props.lecId=" + props.lecId);
             searchLecInfoDetail(props.lecId);
         }
         return () => {

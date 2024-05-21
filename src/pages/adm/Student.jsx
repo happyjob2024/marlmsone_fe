@@ -27,8 +27,8 @@ const Student = () => {
 
     useEffect(() => {
         if (queryLecId !== null) {
-            console.log("lecId : " + queryLecId);
-            console.log("lecName : " + queryLecName);
+            // console.log("lecId : " + queryLecId);
+            // console.log("lecName : " + queryLecName);
             searchLecStdList();
         }
     }, [queryLecId]);
@@ -71,7 +71,7 @@ const Student = () => {
                 //                       "name":"원태형","password":null,"tel":"221-2312-3123",
                 //                       "sex":null,"mail":null,"addr":null,"join_date":null,"regi_num":null,"std_num":null}],
                 //          "totalCnt_std":6,"currentPage_std":1}
-                console.log("searchLecStdList() result console : " + JSON.stringify(res));
+                // console.log("searchLecStdList() result console : " + JSON.stringify(res));
 
                 setLecStdTotalCnt(res.data.totalCnt_std);
                 setLecStdList(res.data.list_std);
@@ -97,7 +97,7 @@ const Student = () => {
             axios.post("/adm/ban_user.do", params)
                 .then((res) => {
                     // {"result":"SUCCESS","resultMsg":"회원 탈퇴 되었습니다."}
-                    console.log("banUser() result console : " + JSON.stringify(res));
+                    // console.log("banUser() result console : " + JSON.stringify(res));
 
                     if (res.data.result === "SUCCESS") {
                         alert(res.data.resultMsg);
