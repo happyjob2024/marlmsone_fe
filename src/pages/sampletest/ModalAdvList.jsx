@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import Modal from "react-modal";
-import * as commonjs from "../../../components/common/commonfunction.js";
+import * as commonjs from "../../components/common/commonfunction.js";
 
 const ModalAdvList = (props) => {
     const [selinfo, setSelinfo] = useState({});
