@@ -208,7 +208,9 @@ const ModalProjectDetail = (props) => {
                 })
                 .catch((err) => {
                     console.log("deleteProject() result error : " + err.message);
-                    alert(err.message);
+                    // alert(err.message);
+                    alert("과제를 삭제할 수 없습니다.");
+                    close();
                 });
         }
     }
