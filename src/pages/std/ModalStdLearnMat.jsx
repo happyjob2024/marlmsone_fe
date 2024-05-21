@@ -7,14 +7,12 @@ const ModalStdLearnMat = (props) => {
     const [selinfo, setSelinfo] = useState({});
 
     useEffect(() => {
-
         if (props.id !== null && props.id !== "") {
-            console.log("ModalStudent> props.id="+props.id);
-
+            // console.log("ModalStudent> props.id="+props.id);
             searchStdLearnMatDetail(props.id);
-            return () => {
-                setSelinfo({});
-            }
+        }
+        return () => {
+            setSelinfo({});
         }
     }, [props.id]);
 
@@ -45,7 +43,7 @@ const ModalStdLearnMat = (props) => {
             .then((res) => {
                 // {"data":{"result":"SUCCESS",
                 //          "std_detail":{"learn_data_id":1,"lec_id":0,
-                console.log("searchStdLearnMatDetail() result console : " + JSON.stringify(res));
+                // console.log("searchStdLearnMatDetail() result console : " + JSON.stringify(res));
 
                 setSelinfo(res.data.std_detail);
             })
@@ -59,11 +57,10 @@ const ModalStdLearnMat = (props) => {
         
         let url = "/fileserver/tutor/" + fileName;
 
-        console.log("fileUrl : " + fileUrl);
-        console.log("fileName : " + fileName);
-        console.log("learnDataId : " + learnDataId);
-        console.log("url : " + url);
-
+        // console.log("fileUrl : " + fileUrl);
+        // console.log("fileName : " + fileName);
+        // console.log("learnDataId : " + learnDataId);
+        // console.log("url : " + url);
 
         // 파일 다운로드를 위한 fetch 요청
         if (window.confirm("다운로드하시겠습니까?")) {

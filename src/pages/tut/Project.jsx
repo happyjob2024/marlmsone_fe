@@ -21,7 +21,7 @@ const Project = (props) => {
 
     useEffect(() => {
         if (props.lecId !== null) {
-            console.log("Project> lecId:" + props.lecId +", toturId:" + props.tutorId);
+            // console.log("Project> lecId:" + props.lecId +", toturId:" + props.tutorId);
             searchProjectList();
         }
     }, [props.lecId, props.tutorId]);
@@ -60,7 +60,7 @@ const Project = (props) => {
                 //                               "hwk_url":"V:\\FileRepository\\project\\tutor\\8c67fbec-e6f0-4345-8cd2-bb05150711a5_1주차 학습자료(수정본23).docx",
                 //                               "hwk_fsize":"21487Byte"}],
                 //          "totalCount":2,"currentPage":1}
-                console.log("searchProjectList() result console : " + JSON.stringify(res));
+                // console.log("searchProjectList() result console : " + JSON.stringify(res));
 
                 setProjectTotalCnt(res.data.totalCount);
                 setProjectList(res.data.tutorProjectList);

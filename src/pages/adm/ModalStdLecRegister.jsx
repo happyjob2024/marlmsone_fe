@@ -12,14 +12,12 @@ const ModalStdLecRegister = (props) => {
     useEffect(() => {
 
         if (props.stdId !== null && props.stdId !== "") {
-            console.log("ModalLecRegister> props.stdId=" + props.stdId);
-
-            // searchStdInfoDetail(props.stdId);
+            // console.log("ModalLecRegister> props.stdId=" + props.stdId);
             searchLecRegList(props.stdId);
-            return () => {
-                setLecRegList([]);
-                setSelLecId('');
-            }
+        }
+        return () => {
+            setLecRegList([]);
+            setSelLecId('');
         }
     }, [props.stdId]);
 
@@ -58,7 +56,7 @@ const ModalStdLecRegister = (props) => {
                 //                       "name":null,"password":null,"tel":null,"sex":null,"mail":null,"addr":null,
                 //                       "join_date":null,"regi_num":null,"std_num":null},
                 //          "totalCnt_lec":18,
-                console.log("searchLecRegList() result console : " + JSON.stringify(res));
+                // console.log("searchLecRegList() result console : " + JSON.stringify(res));
 
                 setLecRegTotalCnt(res.data.totalCnt_lec);
                 setLecRegList(res.data.list_lec);
@@ -87,7 +85,7 @@ const ModalStdLecRegister = (props) => {
             axios.post("/adm/std_lec_reg.do", params)
                 .then((res) => {
                     // {"data":{"result":"SUCCESS","resultMsg":"수강 신청 되었습니다."}
-                    console.log("() result console : " + JSON.stringify(res));
+                    // console.log("() result console : " + JSON.stringify(res));
 
                     if (res.data.result === "SUCCESS") {
                         alert(res.data.resultMsg);  
@@ -112,7 +110,7 @@ const ModalStdLecRegister = (props) => {
 
         axios.post("/adm/slist_lec_json.do", params)
             .then((res) => {
-                console.log("searchStdLecList() result console : " + JSON.stringify(res));
+                // console.log("searchStdLecList() result console : " + JSON.stringify(res));
 
                 props.setTotalCnt(res.data.std_lec_count);
                 props.setList(res.data.slist_lec);

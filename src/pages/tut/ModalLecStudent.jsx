@@ -11,13 +11,12 @@ const ModalLecStudent = (props) => {
 
         if (props.tutorId !== null && props.tutorId !== "" &&
             props.stdId !== null && props.stdId !== "") {
-            console.log("ModalStudent> props.tutorId="+props.tutorId);
-            console.log("ModalStudent> props.stdId="+props.stdId);
-
+            // console.log("ModalStudent> props.tutorId="+props.tutorId);
+            // console.log("ModalStudent> props.stdId="+props.stdId);
             searchLecStdInfoDetail(props.tutorId, props.stdId);
-            return () => {
-                setSelinfo({});
-            }
+        }
+        return () => {
+            setSelinfo({});
         }
     }, [props.tutodId, props.stdId]);
 
@@ -49,7 +48,7 @@ const ModalLecStudent = (props) => {
         axios.post("/tut/lectureStudentDetail.do", params)
             .then((res) => {
                 // {"data":{"detailTutorLecture":[{"lec_Id":1,"lec_name":"자바의이해",
-                console.log("searchLecStdDetail() result console : " + JSON.stringify(res));
+                // console.log("searchLecStdDetail() result console : " + JSON.stringify(res));
                 
                 setSelinfo(res.data.detailTutorLecture[0]);
                 setStdLecList(res.data.detailTutorLecture);                

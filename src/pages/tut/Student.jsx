@@ -28,7 +28,7 @@ const Student = () => {
 
     useEffect(() => {
         if (queryLecId !== null) {
-            console.log("lecId:"+queryLecId+", toturId:"+queryTutorId);
+            // console.log("lecId:"+queryLecId+", toturId:"+queryTutorId);
             searchLecStdList();
         }
     }, [queryLecId]);
@@ -63,7 +63,7 @@ const Student = () => {
         axios.post("/tut/LectureStudentListjson.do", params)
             .then((res) => {
                 // {"data":{"lectureStudentList":
-                console.log("searchLecStdList() result console : " + JSON.stringify(res));
+                // console.log("searchLecStdList() result console : " + JSON.stringify(res));
 
                 setLecStdTotalCnt(res.data.totalCount);
                 setLecStdList(res.data.lectureStudentList);
@@ -98,7 +98,7 @@ const Student = () => {
             axios.post("/tut/lectureStudentApprove.do", params)
                 .then((res) => {
                     // {"data":true,"status":200,"statusText":"OK"
-                    console.log("approveLecStd() result console : " + JSON.stringify(res));
+                    // console.log("approveLecStd() result console : " + JSON.stringify(res));
 
                     if (res.data === true) {
                         alert("수강 승인이 완료되었습니다.");
@@ -131,7 +131,7 @@ const Student = () => {
             axios.post("/tut/lectureStudentCancle.do", params)
                 .then((res) => {
                     // {"data":true,"status":200,"statusText":"OK"
-                    console.log("cancelLecStd() result console : " + JSON.stringify(res));
+                    // console.log("cancelLecStd() result console : " + JSON.stringify(res));
 
                     if (res.data === true) {
                         alert("수강 취소가 완료되었습니다.");

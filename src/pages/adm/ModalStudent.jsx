@@ -14,13 +14,12 @@ const ModalStudent = (props) => {
     useEffect(() => {
 
         if (props.stdId !== null && props.stdId !== "") {
-            console.log("ModalStudent> props.stdId="+props.stdId);
-
+            // console.log("ModalStudent> props.stdId=" + props.stdId);
             searchStdInfoDetail(props.stdId);
             searchStdLecList(props.stdId);
-            return () => {
-                setSelinfo({});
-            }
+        }
+        return () => {
+            setSelinfo({});
         }
     }, [props.stdId]);
 
@@ -60,7 +59,7 @@ const ModalStudent = (props) => {
                 //                        "addr":"경기 시흥시 장현천로 170 (군자동, 장현 동원로얄듀크 메트로포레)",
                 //                        "join_date":null,"regi_num":null,"std_num":null},
                 //             "resultMsg":"조회 되었습니다."}
-                console.log("searchStdInfoDetail() result console : " + JSON.stringify(res));
+                // console.log("searchStdInfoDetail() result console : " + JSON.stringify(res));
                 
                 setSelinfo(res.data.user_model);
             })
@@ -94,7 +93,7 @@ const ModalStudent = (props) => {
                 //                        "tel":null,"sex":null,"mail":null,"addr":null,
                 //                        "join_date":null,"regi_num":null,"std_num":null}],
                 //          "std_lec_count":1}
-                console.log("searchStdLecList() result console : " + JSON.stringify(res));
+                // console.log("searchStdLecList() result console : " + JSON.stringify(res));
 
                 setStdLecTotalCnt(res.data.std_lec_count);
                 setStdLecList(res.data.slist_lec);
@@ -123,7 +122,7 @@ const ModalStudent = (props) => {
             axios.post("/adm/std_lec_del.do", params)
                 .then((res) => {
                     // {"data":{"result":"SUCCESS","resultMsg":"수강 취소 되었습니다."}
-                    console.log("cancelStdLec() result console : " + JSON.stringify(res));
+                    // console.log("cancelStdLec() result console : " + JSON.stringify(res));
 
                     if (res.data.result === "SUCCESS") {
                         alert(res.data.resultMsg);

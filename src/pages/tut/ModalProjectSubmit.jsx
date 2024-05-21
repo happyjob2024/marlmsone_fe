@@ -1,31 +1,20 @@
-import React, {useState, useEffect, useRef} from "react";
+import React, {useState, useEffect} from "react";
 import Modal from "react-modal";
 import axios from "axios";
-import * as commonjs from "../../components/common/commonfunction.js"
-
 
 
 const ModalProjectSubmit = (props) => {
-    const [selinfo, setSelinfo] = useState({});
-
     const [projectSubmitTotalCnt, setProjectSubmitTotalCnt] = useState(0);  // 과제제출 총 개수
     const [projectSubmitList, setProjectSubmitList] = useState([]);         // 과제제출 목록
 
-
-    const inputProjectTitle = useRef();
-    const inputProjectContent = useRef();
-    const inputStartDate = useRef();
-    const inputDeadLineDate = useRef();
-
     useEffect(() => {
-
         if (props.projectId !== null && props.projectId !== "") {
-            console.log("ModalProjectSubmit> props.projectId=" + props.projectId);
+            // console.log("ModalProjectSubmit> props.projectId=" + props.projectId);
 
             searchProjectSubmitDetail(props.projectId);
         }
         return () => {
-            setSelinfo({});
+            setProjectSubmitList([]);
         }
     }, [props.projectId]);
 
@@ -43,7 +32,7 @@ const ModalProjectSubmit = (props) => {
                 //                                 "submit_url":"V:\\FileRepository\\submit\\eXERD,,,b0c6fc64-c3d5-4adf-9005-b5fcb33bdefa.exe",
                 //                                 "submit_fsize":"53248","submit_date":"2024-04-16"}],
                 //          "totalCount":2}
-                console.log("searchProjectSubmitDetail() result console : " + JSON.stringify(res));
+                // console.log("searchProjectSubmitDetail() result console : " + JSON.stringify(res));
 
                 setProjectSubmitTotalCnt(res.data.totalCount);
                 setProjectSubmitList(res.data.studentProjectList);
@@ -57,9 +46,9 @@ const ModalProjectSubmit = (props) => {
     const downloadFile = (fileUrl, fileName) => {
         
         let url = "/fileserver/tut/studentProject/fileDownLoad/" + fileName;
-        console.log("fileUrl : " + fileUrl);
-        console.log("fileName : " + fileName);
-        console.log("url : " + url);
+        // console.log("fileUrl : " + fileUrl);
+        // console.log("fileName : " + fileName);
+        // console.log("url : " + url);
 
 
         // 파일 다운로드를 위한 fetch 요청
@@ -90,7 +79,7 @@ const ModalProjectSubmit = (props) => {
     }
 
     const close = () => {
-        setSelinfo({});
+        setProjectSubmitList([]);
         props.setModalAction(false);
     }
 

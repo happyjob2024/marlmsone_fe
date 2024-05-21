@@ -25,7 +25,6 @@ const ModalRegisterUser = (props) => {
 
 
     useEffect(() => {
-        
         return () => {
             setSelinfo({});
         }
