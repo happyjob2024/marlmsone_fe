@@ -8,6 +8,9 @@ import Modal from "react-modal";
 
 const SamplePage2 = () => {
 
+  // 관리자인지 학생인지에 따른 모달창 + 공지 신규등록 버튼 유무
+  // 등록부분 세션ID가지고 오지못함 확인 후 조치 필요
+
   const [useType        , setUseType        ] = useState("");    // 유저 타입
   const [searchStartDate, setSearchStartDate] = useState("");    // 검색 시작일
   const [searchEndDate  , setSearchEndDate  ] = useState("");    // 검색 마감일
@@ -17,8 +20,8 @@ const SamplePage2 = () => {
   const [inputTitle     , setInputTitle     ] = useState("");    // 공지사항 제목
   const [inputCon       , setInputCon       ] = useState("");    // 공지사항 내용
   const [noticeDis      , setNoticeDis      ] = useState(false); // 모달창 노출유무
-  const [disFileNm      , setDisFileNm      ] = useState("");
-  const [fileYn         , setFileYn         ] = useState("");
+  const [disFileNm      , setDisFileNm      ] = useState("");    // 사진 미리보기 유무
+  const [fileYn         , setFileYn         ] = useState("");    // 첨부파일 유무
 
   const [action         , setAction         ] = useState("");    // CRUD관리코드
   const [isRegBtn       , setIsRegBtn       ] = useState(true);  // 버튼관리코드
@@ -66,8 +69,6 @@ const SamplePage2 = () => {
 
     setSearchStartDate(year.toString() + "-" + monthstr + "-" + sDatestr);
     setSearchEndDate(year.toString() + "-" + monthstr + "-" + eDatestr);
-
-    console.log(year.toString() + "-" + monthstr + "-" + sDatestr);
 
     serachButton();
   }, []);
@@ -177,8 +178,6 @@ const SamplePage2 = () => {
     axios
     .post("/notice/noticeDownload2.do", params, { responseType: "blob" })
       .then((res) => {
-        console.log("attachfileproc res start");
-        console.log(res);
         const reader = new FileReader();
         reader.readAsDataURL(new Blob([res.data]));
         reader.onloadend = (event) => {
@@ -205,7 +204,6 @@ const SamplePage2 = () => {
     if (selfile.files[0]) {
       setAttFile(selfile.files[0]);
       let filePath = selfile.value; // c:\\a.jpg
-      console.log(filePath);
       //전체경로를 \ 나눔.
       let filePathSplit = filePath.split("\\");
 
@@ -226,7 +224,6 @@ const SamplePage2 = () => {
         fileExt === "gif" ||
         fileExt === "jpeg"
       ) {
-        console.log("selfile.files[0] : " + selfile.files[0]);
         const reader = new FileReader();
         reader.readAsDataURL(selfile.files[0]);
         reader.onloadend = () => {
