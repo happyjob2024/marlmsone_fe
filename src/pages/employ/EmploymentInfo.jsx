@@ -185,7 +185,7 @@ const EmploymentInfo = () => {
                 </table>
                 <Pagination
                     currentPage={currentPage}
-                    totalPage={Math.ceil(totalcnt / 5)}
+                    totalPage={totalcnt}
                     pageSize={5}
                     blockSize={5}
                     onClick={setCurrentPage}

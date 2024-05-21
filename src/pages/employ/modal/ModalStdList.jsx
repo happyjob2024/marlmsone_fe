@@ -9,9 +9,6 @@ const ModalStdList = (props) => {
     useEffect(() => {
 
         if (props.id !== null && props.id !== "") {
-            console.log("ModalStdList> pros.id=" + props.id);
-            console.log("#### searchList: " + props.searchList);
-
             stdDetail(props.id);
         }
         return () => {
@@ -40,7 +37,6 @@ const ModalStdList = (props) => {
             .post("/employ/stdinfo.do", params)
             .then((res) => {
                 setStdinfo(res.data.stdinfo);
-                console.log("ModalStdList> res.data.stdinfo : " + JSON.stringify(res.data.stdinfo));
             })
             .catch((err) => {
                 alert(err.message);
@@ -57,7 +53,6 @@ const ModalStdList = (props) => {
             ]);
             if (!checkresult) return;
         }
-        console.log(props.id)
         let params = new URLSearchParams({
             ...stdinfo,
             "std_id": props.id,

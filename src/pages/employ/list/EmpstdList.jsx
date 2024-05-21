@@ -9,7 +9,7 @@ const EmpstdList = (props) => {
     const [stdInfoList, setStdInfoList] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [searchInfo, setSearchInfo] = useState("");
-    const [selected, setSelected] = useState("all");
+    const [selected, setSelected] = useState("all1");
     const [stdTotalcnt, setStdTotalcnt] = useState("");
     const searchStudentList = useRef();
     
@@ -145,7 +145,7 @@ const EmpstdList = (props) => {
             </table>
             <Pagination
                 currentPage={currentPage}
-                totalPage={Math.ceil(stdTotalcnt / 5)}
+                totalPage={stdTotalcnt}
                 pageSize={5}
                 blockSize={5}
                 onClick={setCurrentPage}
