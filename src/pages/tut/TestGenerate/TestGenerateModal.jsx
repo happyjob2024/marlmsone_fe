@@ -1,19 +1,20 @@
 import axios from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Modal from "react-modal";
 import * as commonjs from "../../../components/common/commonfunction.js";
 
 const TestGenerateModal = (props) => {
 
-    console.log(props)
-    const [selinfo, setSelinfo] = useState({});
-
-    // useEffect(() => {
-    //     // roommod(props.id);
-    //     // return () => {
-    //     //     setSelinfo({});
-    //     // }
-    // }, [props.id]);
+    const [setSelinfo] = useState({});
+    const [testId] = useState(props.testId);
+    const [lecId] = useState(props.lecId);
+    const [lecName] = useState(props.lecName);
+    const [lecTypeName] = useState(props.lecTypeName);
+    const [lecTypeId] = useState(props.lecTypeId);
+    const [testName, setTestName] = useState('');
+    const [testItemCnt, setTestItemCnt] = useState('');
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
 
     const modalStyle = {
         content: {
@@ -26,52 +27,49 @@ const TestGenerateModal = (props) => {
         },
     };
 
-    // const roommod = (id) => {
-    //     let params = new URLSearchParams();
-    //     params.append("test_id", id);
-    //     axios
-    //         .post("/tut/tutTestDetailJson.do", params)
-    //         .then((res) => {
-    //             setSelinfo(res.data.selinfo);
-    //         })
-    //         .catch((err) => {
-    //             alert(err.message);
-    //         });
-    // };
+    const postHandler = () => {
 
-    const postHandler = (action) => {
-        if (action !== "D") {
-            let checkresult = commonjs.nullcheck([
-                { inval: selinfo.equ_name, msg: "강의명을 입력해 주세요." },
-                { inval: selinfo.equ_num, msg: "강의 분류를 입력해 주세요." },
-            ]);
-            if (!checkresult) return;
-        }
-        let params = new URLSearchParams(selinfo);
-        params.append("test_id", props.id);
-        params.append("action", action);
+        // let checkresult = commonjs.nullcheck([
+        //     { inval: lecName, msg: "강의명을 입력해 주세요." },
+        //     { inval: lecTypeName, msg: "강의 분류를 입력해 주세요." },
+        // ]);
+        // if (!checkresult) return;
+        
+        let params = new URLSearchParams();
+        params.append("test_id", testId);
+        params.append("test_name", testName);        
+        params.append("generate_cnt", testItemCnt);
+        params.append("lec_type_id", lecTypeId);
+        params.append("lec_id", lecId);
+        params.append("start_date", startDate);
+        params.append("end_date", endDate);       
+
         axios
-            .post("/adm/equSave.do", params)
+            .post("/tut/generateTest.do", params)
             .then((res) => {
-
-                if (res.data.result === "S") {
-                    alert(res.data.resultmsg);
-                    props.setModalAction(false);
-
-                    if (action === "I") {
-                        props.setCurrentPage(1);
-                        props.setModalAction(false);
-                    } else {
-                        props.setModalAction(false);
-                    }
-                } else {
-                    alert(res.data.resultmsg);
-                }
+                props.setCurrentPage(1);
+                props.setModalAction(false);                
             })
             .catch((err) => {
                 alert(err.message);
             });
     };
+
+    const inputCnt = (e) => {
+        setTestItemCnt(e.target.value)
+    }
+
+    const inputName = (e) => {
+        setTestName(e.target.value)
+    }
+
+    const changeStartDate = (e) => {
+        setStartDate(e.target.value)        
+    }
+
+    const changeEndDate = (e) => {
+        setEndDate(e.target.value)
+    }
 
     const close = () => {
         props.setModalAction(false);
@@ -84,7 +82,7 @@ const TestGenerateModal = (props) => {
                 isOpen={props.modalAction}
                 appElement={document.getElementById('app')}
             >
-                <div id="noticeform">
+                <div id="testform">
                     <p className="conTitle">
                         <span>{props.id === "" ? "시험문제 등록" : "시험문제 확인"}</span>
                     </p>
@@ -101,12 +99,11 @@ const TestGenerateModal = (props) => {
                                         type="text"
                                         className="form-control input-sm"
                                         style={{ width: "150px" }}
-                                        defaultValue={selinfo?.equ_name}
+                                        defaultValue={lecName}
                                         onBlur={(e) => {
                                             setSelinfo((prev) => {
-                                                return { ...prev, equ_name: e.target.value }
+                                                return { ...prev, lec_name: e.target.value }
                                             });
-                                            console.log(selinfo)
                                         }}
                                     />
                                 </td>
@@ -120,6 +117,7 @@ const TestGenerateModal = (props) => {
                                         type="text"
                                         className="form-control"
                                         style={{ width: "150px" }}
+                                        defaultValue={lecTypeName}
                                     />
                                 </td> 
                             </tr>
@@ -130,6 +128,8 @@ const TestGenerateModal = (props) => {
                                         type="text"
                                         className="form-control"
                                         style={{ width: "150px" }}
+                                        onChange={inputName}
+                                        value={testName}
                                     />
                                 </td>
                                 <th> 문항수 </th>
@@ -138,6 +138,8 @@ const TestGenerateModal = (props) => {
                                         type="text"
                                         className="form-control"
                                         style={{ width: "150px" }}
+                                        onChange={inputCnt}
+                                        value={testItemCnt}
                                     />
                                 </td>
                             </tr>
@@ -145,9 +147,10 @@ const TestGenerateModal = (props) => {
                                 <th> 시험 시작일 </th>
                                 <td>
                                     <input 
-                                        type="text" 
+                                        type="date" 
                                         className="form-control" 
-                                        id="start_datepicker" 
+                                        onChange={changeStartDate}
+                                        value={startDate}
                                         name="testStartDate" 
                                         data-date-format='yyyy.mm.dd'
                                         style={{ width: "150px" }}
@@ -156,9 +159,10 @@ const TestGenerateModal = (props) => {
                                 <th> 시험 종료일 </th>
                                 <td>
                                     <input 
-                                        type="text" 
+                                        type="date" 
                                         className="form-control" 
-                                        id="end_datepicker" 
+                                        onChange={changeEndDate}
+                                        value={endDate} 
                                         name="testEndDate" 
                                         data-date-format='yyyy.mm.dd'
                                         style={{ width: "150px" }}
@@ -167,32 +171,15 @@ const TestGenerateModal = (props) => {
                             </tr>
                         </tbody>
                     </table>
-                    <div className="modal-button">
-                        {
-                            props.id === "" ?
-                                <button className="btn btn-primary mx-2" onClick={() => postHandler("I")}>
-                                    {" "}
-                                    시험지 생성
-                                    {" "}
-                                </button> : null
-                        }
-                        {
-                            props.id !== "" ?
-                                <button className="btn btn-primary mx-2" onClick={() => postHandler("U")}>
-                                    {" "}
-                                    수정
-                                    {" "}
-                                </button> : null
-                        }
-                        {
-                            props.id !== "" ?
-                                <button className="btn btn-primary mx-2" onClick={() => postHandler("D")}>
-                                    {" "}
-                                    삭제
-                                    {" "}
-                                </button> : null
-                        }
-
+                    <div className="modal-button" style={{alignContent : "center"}}>
+                        <button 
+                            className="btn btn-primary mx-2" 
+                            onClick={() => postHandler()}
+                        >
+                            {" "}
+                            시험지 생성
+                            {" "}
+                        </button>
                         <button className="btn btn-primary" onClick={close}>
                             {" "}
                             닫기

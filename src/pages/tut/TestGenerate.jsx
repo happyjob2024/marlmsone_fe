@@ -18,6 +18,10 @@ const TestGenerate = ()=>{
   const [testModal, setTestModal] = useState(false);
   const [testDetailModal, setTestDetailModal] = useState(false);
   const [testId, setTestId] = useState();
+  const [lecId, setLecId] = useState();
+  const [lecName, setLecName] = useState();
+  const [lecTypeName, setLecTypeName] = useState();
+  const [lecTypeId, setLecTypeId] = useState();
 
   useEffect(() => {  
     searchList();
@@ -28,8 +32,6 @@ const TestGenerate = ()=>{
     cpage = cpage || 1
     setCurrentPage(cpage)
 
-    console.log(searchKey)
-
     let params = new URLSearchParams()
     params.append('searchKey', searchKey)
     params.append('currentPage', cpage)
@@ -38,6 +40,7 @@ const TestGenerate = ()=>{
      axios
       .post('/tut/tutTestListjson.do', params)
       .then((res) => {
+        console.log(res.data.listData)
         setTestList(res.data.listData)
         setTotalCount(res.data.listCnt)
         setTotalPage(Math.ceil(res.data.listCnt / pageSize))
@@ -47,8 +50,12 @@ const TestGenerate = ()=>{
       })
   } 
 
-  const testInsertModal = (id) => {
-    setTestId(id);
+  const testInsertModal = (testId, lecId, lec_name, lec_type_name, lec_type_id) => {
+    setTestId(testId);
+    setLecId(lecId);
+    setLecName(lec_name);
+    setLecTypeName(lec_type_name);
+    setLecTypeId(lec_type_id)
     setTestModal(true);
   }
 
@@ -67,7 +74,7 @@ const TestGenerate = ()=>{
     </p>
     <p className="conTitle">
       <span>시험출제 목록</span>
-      <span class="fr">
+      <span className="fr">
         <select 
           id="searchKey" 
           className="form-control" 
@@ -105,7 +112,7 @@ const TestGenerate = ()=>{
                 <td> {list.start_date} ~ {list.end_date} </td>                 
                 <td className="pointer-cursor" >  
                   {list.test_id === 0 
-                    ? <button onClick={() => testInsertModal(list.test_id)}>시험문제 출제</button> 
+                    ? <button onClick={() => testInsertModal(list.test_id, list.lec_id, list.lec_name, list.lec_type_name, list.lec_type_id)}>시험문제 출제</button> 
                     : <button onClick={() => testPaperModal(list.test_id)}>시험문제 보기</button>
                   }
                 </td>                
@@ -117,7 +124,7 @@ const TestGenerate = ()=>{
       {/* 페이징 처리 */}
       <Pagination currentPage = {currentPage} totalPage = {totalCount} blockSize = {blockSize} onClick = {searchList} pageSize = {pageSize}/>
     </div>
-    {testModal ? <TestGenerateModal modalAction={testModal} setCurrentPage={setCurrentPage} setModalAction={setTestModal} id={testId}></TestGenerateModal> : null}
+    {testModal ? <TestGenerateModal modalAction={testModal} setCurrentPage={setCurrentPage} setModalAction={setTestModal} testId={testId} lecId={lecId} lecName = {lecName} lecTypeName={lecTypeName} lecTypeId={lecTypeId}></TestGenerateModal> : null}
     {testDetailModal ? <TestPaperModal modalAction={testDetailModal} setCurrentPage={setCurrentPage} setModalAction={setTestDetailModal} id={testId}></TestPaperModal> : null}
   </div>  
   )
