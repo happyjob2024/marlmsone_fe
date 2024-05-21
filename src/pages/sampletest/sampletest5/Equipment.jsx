@@ -1,96 +1,72 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useQueryParam } from "../../../hook/useQueryParam";
-import Pagination from "../../../components/common/Pagination";
-import ModalEquipment from "./ModalEquipment";
-
-
-
+import ModalEqu from "./ModalEqu";
 
 const Equipment = () => {
-    const [equipCurrentPage, setEquipCurrentPage] = useState(1);
-    const [equipList, setEquipList] = useState([]);
-    const [equipTotalcnt, setEquipTotalcnt] = useState(0);
-
-    const [equipDisplay, setEquipDisplay] = useState(false);
-    const [equipModalOn, setEquipModalOn] = useState(false);
-    const [equipId, setEquipId] = useState();
-
-
-    // const [searchroomid, setSearchroomid] = useState();
-
-    // const { search } = useLocation();
-    // const id = useMemo(() => new URLSearchParams(search), [search]);
-
+    const [equdis, setEqudis] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [equcurrentPage, setEqucurrentPage] = useState(1);
+    const [equitemlist, setEquitemlist] = useState([]);
+    const [equtotalcnt, setEqutotalcnt] = useState(0);
+    const [equModal, setEquModal] = useState(false);
+    const [equId, setEquId] = useState();
     const queryParam = useQueryParam();
-    const searchLecrmId = queryParam.get('id');
+    const searchroomid = queryParam.get('id');
+    const searchroomNm = queryParam.get('name');
 
 
     useEffect(() => {
-        if (searchLecrmId !== null) {
-            searchEquipList();
-        }
-    }, [searchLecrmId, equipModalOn]);
-
-    // 장비 목록 조회
-    const searchEquipList = async (cpage) => {
-
-        if (typeof cpage === 'number') {
+        const equlist = async (cpage) => {
             cpage = cpage || 1;
-        } else {
-            cpage = 1;
-        }
+            setEqucurrentPage(cpage);
+            setEqudis(true);
+            let params = new URLSearchParams();
+            params.append("cpage", cpage);
+            params.append("pagesize", 5);
+            params.append("lecrm_id", searchroomid);
 
-        setEquipCurrentPage(cpage);
-        setEquipDisplay(true);
+            await axios
+                .post("/adm/equListjson.do", params)
+                .then((res) => {
+                    setEqutotalcnt(res.data.listcnt);
+                    setEquitemlist(res.data.listdata);
+                })
+                .catch((err) => {
+                    alert(err.message);
+                });
+        };
+        equlist();
+    }, [searchroomid,equModal]);
 
-        let params = new URLSearchParams();
-        params.append("cpage", cpage);
-        params.append("pagesize", 5);
-        params.append("lecrm_id", searchLecrmId);
 
-        await axios
-            .post("/adm/equListjson.do", params)
-            .then((res) => {
-                setEquipTotalcnt(res.data.listcnt);
-                setEquipList(res.data.listdata);
-            })
-            .catch((err) => {
-                alert(err.message);
-            });
-    }
-
-    const equipNew = () => {
-        setEquipId("");
-        setEquipModalOn(true);
-    }
-
-    const equipModify = (id) => {
-        setEquipId(id);
-        setEquipModalOn(true);        
-    }
+    const openEqu = (id) => {
+        setEquId(id);
+        setEquModal(true);
+      }
 
     return (
         <div>
-            {equipDisplay && (
+            {equdis && (
                 <div>
                     <p className="conTitle">
-                        <span>장비 목록</span>{" "}
+                        <span>장비 목록</span>
                         <span className="fr">
                             <button
                                 className="btn btn-primary"
                                 name="newRegEqu"
                                 id="newRegEqu"
-                                onClick={equipNew}
+                                onClick={() => {
+                                    openEqu("")
+                                  }}
                             >
                                 <span>장비 신규등록</span>
                             </button>
                         </span>
                     </p>
-                    {/* 장비 목록 display */}
                     <div>
                         <b>
-                            총건수 : {equipTotalcnt} 현재 페이지 번호 : {equipCurrentPage}
+                            총건수 : {equtotalcnt} 현재 페이지 번호 : {equcurrentPage}
                         </b>
                         <table className="col">
                             <colgroup>
@@ -110,15 +86,7 @@ const Equipment = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                            {
-                                equipTotalcnt === 0 && (
-                                    <tr>
-                                        <td colSpan="5">데이터가 없습니다.</td>
-                                    </tr>
-                                )
-                            }
-                            {
-                                equipTotalcnt > 0 && equipList.map((item) => {
+                                {equitemlist.map((item) => {
                                     return (
                                         <tr key={item.equ_id}>
                                             <td>{item.lecrm_name}</td>
@@ -129,32 +97,21 @@ const Equipment = () => {
                                                 <button
                                                     className="btn btn-primary"
                                                     onClick={() => {
-                                                        equipModify(item.equ_id);
-                                                    }}
+                                                        openEqu(item.equ_id)
+                                                      }}
                                                 >
                                                     수정
                                                 </button>
                                             </td>
                                         </tr>
                                     );
-                                })
-                            }
+                                })}
                             </tbody>
                         </table>
-                        <Pagination currentPage={equipCurrentPage}
-                                    totalPage={equipTotalcnt}
-                                    pageSize={5}
-                                    blockSize={5}
-                                    onClick={searchEquipList}
-                        />
-                    </div>{/* End 장비 목록 display */}
-                    {equipModalOn ? <ModalEquipment modalAction={equipModalOn} 
-                                                  setCurrentPage={setEquipCurrentPage} 
-                                                  setModalAction={setEquipModalOn} 
-                                                  lecrmId={searchLecrmId}
-                                                  equipId={equipId}></ModalEquipment> : null}
+                    </div>
                 </div>
             )}
+            {equModal ? <ModalEqu modalAction={equModal} setCurrentPage={setCurrentPage} setModalAction={setEquModal} id={equId} lecrmNm={searchroomNm} lecrmId={searchroomid}></ModalEqu> : null}
         </div>
     )
 }

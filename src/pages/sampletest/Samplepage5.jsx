@@ -1,21 +1,18 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import Pagination from "../../components/common/Pagination";
 import Equipment from "./sampletest5/Equipment";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import Pagination from "../../components/common/Pagination";
 import ModalLecture from "./sampletest5/ModalLecture";
 
-const SamplePage8 = () => {
+const SamplePage5 = () => {
   const navigate = useNavigate();
   const searchRoomName = useRef();
-
   const [currentPage, setCurrentPage] = useState(1);
-  const [lecrmList, setLecrmList] = useState([]);
+  const [roomlist, setRoomlist] = useState([]);
   const [totalcnt, setTotalcnt] = useState(0);
-
+  const [lectureModal, setLectureModal] = useState(false);
   const [lecrmId, setLecrmId] = useState();
-  const [lecrmModalOn, setLecrmModalOn] = useState(false);
-  
 
   const searchstyle = {
     fontsize: "15px",
@@ -28,29 +25,29 @@ const SamplePage8 = () => {
   };
 
   useEffect(() => {
-    searchLecrmList(currentPage);
-  }, [currentPage, lecrmModalOn]);
+    searchroom(currentPage);
+  }, [currentPage, lectureModal]);
 
-  // 강의실 목록 조회
-  const searchLecrmList = (cpage) => {
+  const searchequlist = (lecrmId,lecrmName) => {
+    const query = [`id=${lecrmId ?? 0}&name=${lecrmName}`];
+    navigate(`/dashboard/sampletest/samplepage5?${query}`)
+  }
 
-    // if (typeof cpage === 'number') {
-    //   cpage = cpage || 1;
-    // } else {
-    //   cpage = 1;
-    // }
-    cpage = typeof cpage === 'number'? cpage || 1 : 1;
+  const searchroom = (cpage) => {
+    if (typeof cpage === 'number') {
+      cpage = cpage || 1;
+    } else {
+      cpage = 1;
+    }
     let params = new URLSearchParams();
-
     params.append("cpage", cpage);
     params.append("pagesize", 5);
     params.append("searchRoomName", searchRoomName.current.value);
-
     axios
       .post("/adm/lectureRoomListjson.do", params)
       .then((res) => {
         setTotalcnt(res.data.listcnt);
-        setLecrmList(res.data.listdata);
+        setRoomlist(res.data.listdata);
         setCurrentPage(cpage);
       })
       .catch((err) => {
@@ -58,33 +55,25 @@ const SamplePage8 = () => {
       });
   };
 
-  // 장비 목록 조회 (URL로 호출)
-  const searchEquipList = (lecrmId) => {
-    const query = [`id=${lecrmId ?? 0}`];
-    navigate(`/dashboard/sampletest/samplepage5?${query}`)
-  }
-
-  // 강의실 신규등록 modal open
-  const lecrmNew = () => {
-    setLecrmId("");
-    setLecrmModalOn(true);
-  }
-
-  // 강의실 수정 modal open
-  const lecrmModify = (id) => {
+  const openLecture = (id) => {
     setLecrmId(id);
-    setLecrmModalOn(true);
+    setLectureModal(true);
+  }
+
+  const newroom = () => {
+    setLecrmId("");
+    setLectureModal(true);
   }
 
   return (
     <div>
       <div>
         <p className="Location">
-          <span className="btn_nav bold">시설 관리</span>{" "}
-          <span className="btn_nav bold"> 강의실</span>{" "}
+          <span className="btn_nav bold">시설 관리</span>
+          <span className="btn_nav bold"> 강의실</span>
         </p>
         <p className="conTitle">
-          <span>강의실</span>{" "}
+          <span>강의실</span>
           <span className="fr">
             <span style={searchstyle}>강의실 명 </span>
             <input
@@ -98,15 +87,16 @@ const SamplePage8 = () => {
             />
             <button
               className="btn btn-primary"
-              onClick={searchLecrmList}
+              onClick={searchroom}
               name="searchbtn"
               id="searchbtn"
             >
               <span>검색</span>
             </button>
+
             <button
               className="btn btn-primary"
-              onClick={() => lecrmNew()}
+              onClick={() => newroom()}
               name="newReg"
               id="newReg"
             >
@@ -115,7 +105,6 @@ const SamplePage8 = () => {
           </span>
         </p>
 
-        {/* 강의실 목록 display */}
         <div>
           <b>
             총건수 : {totalcnt} 현재 페이지 번호 : {currentPage}
@@ -138,57 +127,46 @@ const SamplePage8 = () => {
               </tr>
             </thead>
             <tbody>
-            {
-              totalcnt === 0 && (
-                  <tr>
-                      <td colSpan="5">데이터가 없습니다.</td>
-                  </tr>
-              )
-            }
-            {
-                totalcnt > 0 && lecrmList.map((item) => {
-                  return (
-                    <tr key={item.lecrm_id}>
-                      <td
-                        className="pointer-cursor"
-                        onClick={() => searchEquipList(item.lecrm_id)}
+              {roomlist.map((item) => {
+                return (
+                  <tr key={item.lecrm_id}>
+                    <td
+                      className="pointer-cursor"
+                      onClick={() => searchequlist(item.lecrm_id,item.lecrm_name)}
+                    >
+                      {item.lecrm_name}
+                    </td>
+                    <td>{item.lecrm_size}</td>
+                    <td>{item.lecrm_snum}</td>
+                    <td>{item.lecrm_note}</td>
+                    <td>
+                      <button
+                        className="btn btn-primary"
+                        onClick={() => {
+                          openLecture(item.lecrm_id)
+                        }}
                       >
-                        {item.lecrm_name}
-                      </td>
-                      <td>{item.lecrm_size}</td>
-                      <td>{item.lecrm_snum}</td>
-                      <td>{item.lecrm_note}</td>
-                      <td>
-                        <button
-                          className="btn btn-primary"
-                          onClick={() => {
-                            lecrmModify(item.lecrm_id)
-                          }}
-                        >
-                          수정
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })
-            }
+                        수정
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
-          <Pagination currentPage={currentPage}
-                    totalPage={totalcnt}
-                    pageSize={5}
-                    blockSize={5}
-                    onClick={searchLecrmList}
+          <Pagination
+            currentPage={currentPage}
+            totalPage={totalcnt}
+            pageSize={5}
+            blockSize={5}
+            onClick={searchroom}
           />
-        </div>{/* End 강의실 목록 display */}
+        </div>
         <Equipment></Equipment>
-        {lecrmModalOn ? <ModalLecture modalAction={lecrmModalOn} 
-                                      setCurrentPage={setCurrentPage} 
-                                      setModalAction={setLecrmModalOn} 
-                                      id={lecrmId}></ModalLecture> : null}
+        {lectureModal ? <ModalLecture modalAction={lectureModal} setCurrentPage={setCurrentPage} setModalAction={setLectureModal} id={lecrmId}></ModalLecture> : null}
       </div>
     </div>
   )
 }
 
-export default SamplePage8;
+export default SamplePage5; 

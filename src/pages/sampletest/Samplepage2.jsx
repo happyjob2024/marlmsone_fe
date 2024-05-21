@@ -1,313 +1,501 @@
 //   /*eslint-disale */  아래 Worning 메세지 안나옴
 
 import React, { useState, useEffect } from "react";
-import SamplePage3 from "./Samplepage3";
-import Selectcomponent from "./Selectcomponent";
+import axios from "axios";
+import Pagination from "../../components/common/Pagination";
+import * as commonjs from "../../components/common/commonfunction.js";
+import Modal from "react-modal";
 
 const SamplePage2 = () => {
-  const [distime, setDistime] = useState(0);
-  const [distimetwo, setDistimetwo] = useState(0);
-  const [param1, setParam1] = useState("황기현");
-  const [param2, setParam2] = useState("방가방가 !!!!!!!");
-  const indata = "11";
-  const [radioid, setRadioid] = useState("genderid");
-  const [radioname, setRadioname] = useState("gendername");
-  const [radiovalue, setRadiovalue] = useState("M");
-  let [inputtest, setInputtest] = useState("test");
-  // let [inputtest2, setInputtest2] = useState('test2')
-  let [seltest, setSeltest] = useState("1");
-  let [chktest, setChkest] = useState([]);
 
-  const addtime = () => {
-    setDistime(distime + 1);
-    setParam1("황기현");
-  };
+  const [useType        , setUseType        ] = useState("");    // 유저 타입
+  const [searchStartDate, setSearchStartDate] = useState("");    // 검색 시작일
+  const [searchEndDate  , setSearchEndDate  ] = useState("");    // 검색 마감일
+  const [searchTitle    , setSearchTitle    ] = useState("");    // 검색창 값
+  const [noticeList     , setNoticeList     ] = useState([]);    // 공지사항 목록
+  const [selNoticeNo    , setSelNoticeNo    ] = useState(0);     // 공지사항 번호
+  const [inputTitle     , setInputTitle     ] = useState("");    // 공지사항 제목
+  const [inputCon       , setInputCon       ] = useState("");    // 공지사항 내용
+  const [noticeDis      , setNoticeDis      ] = useState(false); // 모달창 노출유무
+  const [disFileNm      , setDisFileNm      ] = useState("");
+  const [fileYn         , setFileYn         ] = useState("");
 
-  const minustime = () => {
-    setDistime(distime - 1);
-    setParam2("방가방가 !!!!!!!");
-  };
+  const [action         , setAction         ] = useState("");    // CRUD관리코드
+  const [isRegBtn       , setIsRegBtn       ] = useState(true);  // 버튼관리코드
+  const [preview        , setPreView        ] = useState("");    // 파일명
+  const [selFileYn      , setSelFileYn      ] = useState(false); // 파일유무
+  const [attFile        , setAttFile        ] = useState({});    // 파일
+  const [fileNm         , setFileNm         ] = useState("");    // 파일명
 
-  const reset = () => {
-    setDistime((prev) => {
-      alert(prev);
-      //indata = '22'
-      return 0;
-    });
-  };
+  const [blockSize                          ] = useState(5);     // 
+  const [currentPage    , setCurrentPage    ] = useState(1);     // 현재 페이지
+  const [pageSize       , setPageSize       ] = useState(10);    // 페이지 크기
+  const [totalCnt       , setTotalCnt       ] = useState(0);     // 총 페이지 수
 
-  // changetime = (flag) => {
-  //   if (flag === 'a') {
-  //    setDistime(distime + 1)
-  //   } else {
-  //     setDistime(distime - 1)
-  //   }
-  // }
-
-  const addtime2 = () => {
-    setDistimetwo(distimetwo + 1);
-    setParam1("배용준");
-  };
-
-  const minustime2 = () => {
-    setDistimetwo(distimetwo - 1);
-    setParam2("잘생김");
-  };
-
-  const reset2 = () => {
-    setDistimetwo((prev) => {
-      alert(prev);
-      return 0;
-    });
-  };
-
-  const radiochange = () => {
-    if (radiovalue === "M") {
-      setRadioid("changeid");
-      setRadioname("changename");
-      setRadiovalue("F");
-    } else {
-      setRadioid("genderid");
-      setRadioname("gendername");
-      setRadiovalue("M");
-    }
-  };
-
-  const radiovalueconf = () => {
-    alert(radiovalue);
-  };
-
-  const radioclick = (e) => {
-    alert(e.target.value);
-    //const newval = e.target.value
-    setRadiovalue(e.target.value);
-  };
-
-  const settingchk = (e, index) => {
-    //let copy = chktest // 데이터가 복사 되는것이 아니고 주소 복사가 되어서 같은 값
-    //console.log(copy == chktest)
-    //copy[index] = e.target.value
-    //console.log(e.target.value)
-    //setChkest(copy) // 주소가 같은 값이면 랜더링 안됨
-
-    let copyarr = [...chktest]; // 데이터 복사 후 새로운 저장 공간에 복사
-    console.log(copyarr == chktest);
-
-    if (e.target.checked) {
-      copyarr.push(e.target.value);
-    } else {
-      for (let i = 0; i < copyarr.length; i++) {
-        if (copyarr[i] === e.target.value) {
-          console.log(index - 1); // 1(선택) -> 2(선택) -> 1(선택 해제) -> 2(선택 해제)  안됨   실제 index 0 인대 삭제 index는 1임
-          copyarr.splice(i, 1);
-        }
-      }
-    }
-
-    chktest = [...copyarr];
-    setChkest(chktest);
-  };
-
+  
+  /* 로드시 달력 날짜 입력 및 공지사항 조회 */
   useEffect(() => {
-    console.log("SamplePage2 useEffect  시작");
+    let today = new Date();
+
+    let year  = today.getFullYear() ; // 년도
+    let month = today.getMonth() + 1; // 월
+    let sDate = today.getDate()  - 2; // 날짜
+    let eDate = today.getDate()  + 1; // 날짜
+
+    let monthstr = "";
+    let sDatestr = "";
+    let eDatestr = "";
+
+    if (month < 10) {
+      monthstr = "0" + month.toString();
+    } else {
+      monthstr = month.toString();
+    }
+
+    if (sDate < 10) {
+      sDatestr = "0" + sDate.toString();
+    } else {
+      sDatestr = sDate.toString();
+    }
+
+    if (eDate < 10) {
+      eDatestr = "0" + eDate.toString();
+    } else {
+      eDatestr = eDate.toString();
+    }
+
+    setSearchStartDate(year.toString() + "-" + monthstr + "-" + sDatestr);
+    setSearchEndDate(year.toString() + "-" + monthstr + "-" + eDatestr);
+
+    console.log(year.toString() + "-" + monthstr + "-" + sDatestr);
+
+    serachButton();
   }, []);
 
-  const scomreturn = (rvalue) => {
-    alert(rvalue);
+  /* 모달 스타일관리 */
+  const modalStyle = {
+    content: {
+      top: "50%",
+      left: "50%",
+      right: "auto",
+      bottom: "auto",
+      boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
+      transform: "translate(-50%, -50%)",
+    },
+  };
+
+  /* 공지사항 목록 버튼 */
+  const serachButton = () => {
+    searchList(1);
+  };
+
+  /* 공지사항 목록 */
+  const searchList = (cpage) => {
+    cpage = cpage || 1;
+    setCurrentPage(cpage);
+
+    let params = new URLSearchParams();
+    params.append("cpage"       , cpage);
+    params.append("pagesize"    , pageSize);
+    params.append("searchtitle" , searchTitle);
+    params.append("searchstdate", searchStartDate);
+    params.append("searcheddate", searchEndDate);
+
+    axios
+      .post("/notice/noticelistjson.do", params)
+      .then((res) => {
+        setTotalCnt(res.data.listcnt);
+        setNoticeList(res.data.listdata);
+      })
+      .catch((err) => {
+        alert(err.message);
+      });
+  };
+
+  /* 공지사항 상세 */
+  const deteilNotice = (id) => {
+    let params = new URLSearchParams();
+    params.append("notice_id", id);
+
+    axios
+      .post("/notice/noticeView.do", params)
+      .then((res) => {
+        setSelNoticeNo(id);
+        setInputTitle(res.data.selinfo.notice_tit);
+        setInputCon(res.data.selinfo.notice_con);
+        setFileNm(res.data.selinfo.filename);
+        setAction("U");
+        setIsRegBtn(false);
+
+        let fileext = res.data.selinfo.fileext;
+
+        if (res.data.selinfo.filename === "") {
+          // 파일 미첨부
+          setPreView("");
+          setSelFileYn(false);
+          setAttFile();
+          setFileNm("");
+        } else {
+          if (
+            fileext === "jpg" ||
+            fileext === "png" ||
+            fileext === "gif" ||
+            fileext === "jpeg"
+          ) {
+            setSelFileYn(true); //  이미지 파일 업로드 된 경우  미리보기 처리   다운로드 URL 호출
+            attachFileProc("P", id);
+          } else {
+            setPreView(res.data.selinfo.filename);
+            setSelFileYn(false);
+          }
+        }
+        setNoticeDis(true);
+      })
+      .catch((err) => {
+        alert(err.message);
+      });
+  };
+
+  /* 신규등록버튼 */
+  const newreg = () => {
+    setInputTitle("");
+    setInputCon("");
+    setAction("I");
+    setSelNoticeNo(0);
+
+    setIsRegBtn(true);
+    setNoticeDis(true);
+
+    setPreView();
+  };
+
+  /* 파일정보 */
+  const attachFileProc = (ptype, noticeNo) => {
+    let params = new URLSearchParams();
+    params.append("notice_id", noticeNo);
+
+    axios
+    .post("/notice/noticeDownload2.do", params, { responseType: "blob" })
+      .then((res) => {
+        console.log("attachfileproc res start");
+        console.log(res);
+        const reader = new FileReader();
+        reader.readAsDataURL(new Blob([res.data]));
+        reader.onloadend = (event) => {
+          if (ptype === "P") {
+            setPreView(reader.result);
+          } else {
+            let docUrl = document.createElement("a");
+            docUrl.href = reader.result;
+            docUrl.setAttribute("download", fileNm);
+            document.body.appendChild(docUrl);
+            docUrl.click();
+          }
+        };
+      })
+      .catch((err) => {
+        alert(err.message);
+      });
+  };
+
+  /* 파일 미리보기 */
+  const previewfunc = (e) => {
+    let selfile = e.currentTarget;
+
+    if (selfile.files[0]) {
+      setAttFile(selfile.files[0]);
+      let filePath = selfile.value; // c:\\a.jpg
+      console.log(filePath);
+      //전체경로를 \ 나눔.
+      let filePathSplit = filePath.split("\\");
+
+      //전체경로를 \로 나눈 길이.
+      let filePathLength = filePathSplit.length;
+      //마지막 경로를 .으로 나눔.
+      let fileNameSplit = filePathSplit[filePathLength - 1].split(".");
+      //파일명 : .으로 나눈 앞부분
+      let fileName = fileNameSplit[0];
+      //파일 확장자 : .으로 나눈 뒷부분
+      let fileExt = fileNameSplit[1];
+      //파일 크기
+      let fileSize = selfile.files[0].size;
+
+      if (
+        fileExt === "jpg" ||
+        fileExt === "png" ||
+        fileExt === "gif" ||
+        fileExt === "jpeg"
+      ) {
+        console.log("selfile.files[0] : " + selfile.files[0]);
+        const reader = new FileReader();
+        reader.readAsDataURL(selfile.files[0]);
+        reader.onloadend = () => {
+          setPreView(reader.result);
+        };
+        setSelFileYn(true);
+      } else {
+        setPreView("./logo.svg");
+        setSelFileYn(false);
+      }
+    }
+  };
+
+  /* 파일 미리보기 관리 */
+  const filePreView = () => {
+    attachFileProc("D", selNoticeNo);
+  };
+
+  /* 등록/수정/삭제 관리 */
+  const noticereg = (e) => {
+    e.preventDefault();
+    let actionVal = e.target.value;
+    
+    let params = new FormData();
+    params.append("notice_tit", inputTitle);
+    params.append("notice_con", inputCon);
+    params.append("noticeNo"  , selNoticeNo);
+    params.append("file_yn"   , fileYn);
+    params.append("file"      , attFile);
+    params.append("action"    , actionVal);
+
+    let callurl = "";
+
+    if (actionVal === "I") {
+      callurl = "/notice/noticeSave.do";
+    } else if (actionVal === "U") {
+      callurl = "/notice/noticeModify.do";
+    } else if (actionVal === "D") {
+      params.append("notice_id", selNoticeNo);
+      callurl = "/notice/noticeDelete.do";
+    }
+
+    axios
+      .post(callurl, params)
+      .then((res) => {
+        if (res.data.result === "sucess" || res.data.success === true) {
+          closeNoticeModal();
+          searchList();
+        }
+      })
+      .catch((err) => {
+        alert(err.message);
+      });
+  };
+
+  /* 모달 창닫기 */
+  const closeNoticeModal = () => {
+    setNoticeDis(false);
   };
 
   return (
-    <div>
-      <h6>
-        useState 외 useEffect, React.Fragment, Fragment 등 훅 사용법은 별도로
-        샘플 설명
-      </h6>
-      <br />
-      <h6>Lifecycle 사용법, useState(Json) 형태 샘플 은 별도로 샘플 설명</h6>
-      <br />
-      <br />
-      <br />
-      <a
-        href="https://codingapple.com/unit/react-if-else-patterns-enum-switch-case/"
-        target="_blank"
-      >
-        <h6>if 문 샘픔</h6>
-      </a>
-      <a href="https://codingbroker.tistory.com/123" target="_blank">
-        <h6>Looping 샘픔</h6>
-      </a>
-      <br />
-      <br />
-      시간: {distime} : {distimetwo}
-      <br />
-      <button onClick={addtime}> 더하기 1</button>{" "}
-      <button onClick={minustime}> 빼기 1</button>{" "}
-      <button onClick={reset}> reset 1</button> <br />
-      <button onClick={addtime2}> 더하기 2</button>{" "}
-      <button onClick={minustime2}> 빼기 2</button>{" "}
-      <button onClick={reset2}> reset 2</button> <br />
-      <br />
-      <input type="text" id="inputtext1" name="inputtext1" value={indata} />
-      <br />
-      inputtext1값이 reset 눌러도 변경 안됨... useState(상태관리) 사용 해야 변경
-      가능
-      <br />
-      ==================== 외부 componnt Call =============================
-      <SamplePage3 param1={param1} param2={param2} />
-      <br />
-      <Incomponent msg="황기현" />
-      ==================== Radio 테스트 =============================
-      <br />
-      <br /> defaultChecked 빼면 값은 바뀌지만 'checked' 옵션이 안바뀜
-      <br /> defaultChecked 넣으면 라디오 값이 안바뀜
-      <br />남 :{" "}
-      <input
-        type="radio"
-        id={radioid}
-        name={radioname}
-        value="M"
-        checked={radiovalue === "M"}
-        onChange={radioclick}
-      />
-      여 :{" "}
-      <input
-        type="radio"
-        id={radioid}
-        name={radioname}
-        value="F"
-        checked={radiovalue === "F"}
-        onChange={radioclick}
-      />
-      <br />
-      <button onClick={radiochange}> 라디오값 변경</button> <br />
-      <button onClick={radiovalueconf}> 라디오값 확인</button> <br />
-      <br />
-      <br />
-      ====================== Input Test =======================
-      <br />
-      <input
-        type="text"
-        id="inputtext"
-        value={inputtest}
-        name="inputtext"
-        onChange={(e, prev) => {
-          setInputtest(e.target.value);
-          // undefined : 1233 : 123    alert 이후 setInputtest에 의해 randering 됨
-          alert(prev + " : " + e.target.value + " : " + inputtest);
-        }}
-      />
-      {/*
-      <input
-        type='text'
-        id='inputtext'
-        value={inputtest2}
-        name='inputtext'
-        onChange={(e) => {
-          let evntval = e
-          // evntval  에러 발생
-          setInputtest(
-            (prev,evntval) = {
-              return evntval.target.value
-            },
-          )
-
-          alert(prev + ' : ' + e.target.value + ' : ' + inputtest)
-        }}
-      />
-      */}
-      <br />
-      ====================== Select Test ======================= <br />
-      onChange 의 setSeltest 부분을 빼면 재랜더링이 안되어 값이 안바뀜
-      <br />
-      <select
-        id="seltest"
-        name="seltest"
-        value={seltest}
-        onChange={(e) => {
-          setSeltest(e.target.value);
-        }}
-      >
-        <option value="">전체</option>
-        <option value="1">one</option>
-        <option value="2">two</option>
-        <option value="3">three</option>
-      </select>
-      <button
-        onClick={() => {
-          alert(seltest);
-        }}
-      >
-        {" "}
-        Select 확인
-      </button>{" "}
-      <br />
-      <br />
-      ====================== Check Box Test ======================= <br />1 :{" "}
-      <input
-        type="checkbox"
-        id="check1"
-        name="chktest"
-        value="1"
-        onChange={(e) => {
-          settingchk(e, 1);
-          //setChkest(e.target.value)
-        }}
-      />
-      <br />2 :{" "}
-      <input
-        type="checkbox"
-        id="check2"
-        name="chktest"
-        value="2"
-        onChange={(e) => {
-          settingchk(e, 2);
-
-          //setChkest(e.target.value)
-        }}
-      />
-      <br />
-      배열 내용 : {chktest}
-      <br />
-      <br />
-      ====================== Select Box Test(Loop) ======================={" "}
-      <br />
-      체크박스 선택한 체크박스 값이 배열로 들어가는데, 배열의 내용으로 Select
-      Box 구성
-      <br />
-      <select id="selectloop" name="selectloop">
-        <option key="0" value="">
-          전체
-        </option>
-        {chktest.map((item, index) => (
-          <option key={index} value={item}>
-            {item}
-          </option>
-        ))}
-      </select>
-      <br />
-      <br />
-      {chktest.map((item, index) => (
-        <p>
-          {item}
-          <input type="radio" id={item} name={item} value={item} />
+		<div id="container">
+      {/* <!-- contents --> */}
+      <h3 className="hidden">contents 영역</h3>
+      <div className="content">
+        <p className="Location">
+          <a className="btn_set home">메인으로</a>
+          <span className="btn_nav bold">학습지원</span>
+          <span className="btn_nav bold">공지사항</span>
+          <a className="btn_set refresh">새로고침</a>
         </p>
-      ))}
-      <br />
-      <br />
-      <Selectcomponent datalist={chktest} refunc={scomreturn} />
-      <br />
-      <br />
-    </div>
+
+        <p className="conTitle">
+            <span>공지사항</span> 
+            <span className="fr">제목
+              <input type="text" 
+                      id="searchTitle" 
+                      name="searchTitleNm" 
+                      style={{width:'150px', height : "30px"}}
+                      onChange={(e) => {
+                        setSearchTitle(e.target.value);
+                      }}
+              />
+                기간
+              <input type="date" 
+                      id="searchStdate" 
+                      name="searchStdateNm"
+                      value={searchStartDate}
+                      onChange={(e) => {
+                      setSearchStartDate(e.target.value);
+                    }}
+              />
+                ~
+              <input type="date" 
+                      id="searchEdDate"
+                      name="searchEdDateNm"
+                      value={searchEndDate}
+                      onChange={(e) => {
+                        setSearchEndDate(e.target.value);
+                      }}
+                      /> 
+              <button className="btn btn-primary" 
+                      name="searchbtn"
+                      id="searchbtn"
+                      onClick={serachButton}
+              >
+                <span>검색</span>
+              </button>
+              <button className="btn btn-primary"
+                      id="saveBtn"
+                      name="saveBtnNm"
+                      onClick={newreg}
+              >
+                <span>신규등록</span>
+              </button>
+            </span>
+        </p>
+        
+        <div className="divComGrpCodList">
+          <table className="col">
+            <caption>caption</caption>
+            <colgroup>
+              <col width="10%"/>
+              <col width="50%"/>
+              <col width="15%"/>
+              <col width="15%"/>
+              <col width="10%"/>
+            </colgroup>
+
+            <thead>
+              <tr>
+                <th scope="col">번호</th>
+                <th scope="col">제목</th>
+                <th scope="col">작성자</th>
+                <th scope="col">등록일</th>
+                <th scope="col">조회수</th>
+              </tr>
+            </thead>
+            <tbody>
+              {totalCnt === 0 && (
+                <tr>
+                  <td colSpan="5"> 조회된 데이터가 없습니다.</td>
+                </tr>
+              )}
+              {totalCnt > 0 &&
+                noticeList.map((item) => {
+                  return (
+                    <tr key={item.notice_id}>
+                      <td
+                        className="pointer-cursor"
+                      >
+                        {item.notice_id}
+                      </td>
+                      <td><a onClick={() => deteilNotice(item.notice_id)}>{item.notice_tit}</a></td>
+                      <td>{item.loginID}</td>
+                      <td>{item.regdate}</td>
+                      <td>{item.hit}</td>
+                    </tr>
+                  );
+                })}
+            </tbody>
+          </table>
+          <Pagination
+          currentPage={currentPage}
+          totalPage={totalCnt}
+          pageSize={pageSize}
+          blockSize={blockSize}
+          onClick={searchList}
+        />
+        </div>
+
+      <Modal
+        style={modalStyle}
+        isOpen={noticeDis}
+        onRequestClose={closeNoticeModal}
+      >
+        <form action="" method="post" id="saveForm">
+          <div id="noticeform">
+            <p className="conTitle">
+              <span>{isRegBtn ? "공지사항 등록" : "공지사항 수정"}</span>
+            </p>
+            <table style={{ width: "550px", height: "350px" }}>
+              <tbody>
+                <tr>
+                  <th>
+                    제목 <span className="font_red">*</span>
+                  </th>
+                  <td colSpan="3">
+                    <input
+                      type="text"
+                      className="form-control input-sm"
+                      style={{ width: "470px" }}
+                      value={inputTitle}
+                      onChange={(e) => {
+                        setInputTitle(e.target.value);
+                      }}
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <th>
+                    내용<span className="font_red">*</span>
+                  </th>
+                  <td colSpan="3">
+                    <textarea
+                      className="form-control input-sm"
+                      value={inputCon}
+                      cols="40"
+                      rows="5"
+                      onChange={(e) => {
+                        setInputCon(e.target.value);
+                      }}
+                    ></textarea>
+                  </td>
+                </tr>
+                <tr>
+                  <th>
+                    파일<span className="font_red">*</span>
+                  </th>
+                  <td colSpan="3">
+                    <input
+                      type="file"
+                      className="form-control input-sm"
+                      onChange={previewfunc}
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <th>
+                    미리보기<span className="font_red">*</span>
+                  </th>
+                  <td colSpan="3">
+                    {selFileYn && (
+                      <img
+                        src={preview ? preview : `./logo.svg`}
+                        alt="preview"
+                        className="filePreView"
+                        onClick={filePreView}
+                      />
+                    )}
+                    {!selFileYn && disFileNm}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div className="modal-button">
+              {isRegBtn && (
+                <button className="btn btn-primary mx-2" onClick={noticereg} value="I">
+                  등록
+                </button>
+              )}
+              {!isRegBtn && (
+                <button className="btn btn-primary mx-2" onClick={noticereg} value="U">
+                  수정
+                </button>
+              )}
+              {!isRegBtn && (
+                <button className="btn btn-primary mx-2"onClick={noticereg} value="D"> 삭제 </button>
+              )}
+              <button className="btn btn-primary" onClick={closeNoticeModal}>
+                닫기
+              </button>
+            </div>
+          </div>
+        </form>
+      </Modal>
+      </div>
+		</div>
   );
 };
-
-function Incomponent(props) {
-  return (
-    <div>
-      <h1>{props.msg} 방가방가!!!!!!!!!!!!!!!!</h1>
-      <SamplePage3 param1="나는" param2="전채다" />
-    </div>
-  );
-}
 
 export default SamplePage2;
