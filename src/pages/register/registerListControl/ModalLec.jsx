@@ -310,14 +310,6 @@ const ModalLec = (props) => {
                 수정
               </button>
             ) : null}
-            {props.id !== "" ? (
-              <button
-                className="btn btn-primary mx-2"
-                onClick={() => postHandle("D")}
-              >
-                삭제
-              </button>
-            ) : null}
             <button className="btn btn-primary" onClick={close}>
               닫기
             </button>
