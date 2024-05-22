@@ -15,17 +15,15 @@ const ModalProjectDetail = (props) => {
     const inputFile = useRef();
 
     useEffect(() => {
-
-        console.log("ModalProjectDetail> props.requestAction=" + props.requestAction + ", props.id=" + props.id);
-        if (props.requestAction === "U") {
-            searchProjectDetail(props.id);
-        }
+        // console.log("ModalProjectDetail> props.requestAction=" + props.requestAction);
         if (props.requestAction === "I") {
             setSelinfo(prevSelinfo => ({
                 ...prevSelinfo,
                 startDate: getTodayDate(),
                 deadLineDate: getTodayDate(),
             }));
+        } else if (props.requestAction === "U") {
+            searchProjectDetail(props.id);
         }
         
         return () => {
@@ -55,7 +53,7 @@ const ModalProjectDetail = (props) => {
                 //                               "project_orginal_fname":"1주차 학습자료(수정본23).docx",
                 //                               "hwk_url":"V:\\FileRepository\\project\\tutor\\8c67fbec-e6f0-4345-8cd2-bb05150711a5_1주차 학습자료(수정본23).docx",
                 //                               "hwk_fsize":"21487Byte"}}
-                console.log("searchProjectDetail() result console : " + JSON.stringify(res));
+                // console.log("searchProjectDetail() result console : " + JSON.stringify(res));
                 
                 setSelinfo(res.data.detailTutorProject);                
             })
@@ -99,7 +97,6 @@ const ModalProjectDetail = (props) => {
                 return;
             }
 
-    
             // var formData = new FormData();		
             // formData.append("lectureValue", lectureValue);
             // formData.append("projectTitle", projectTitle);
@@ -123,7 +120,7 @@ const ModalProjectDetail = (props) => {
             axios.post("/tut/saveLectureProject", formData)
                 .then((res) => {
                     // {"data":true,"status":200,"statusText":"OK"
-                    console.log("registerProject() result console : " + JSON.stringify(res));
+                    // console.log("registerProject() result console : " + JSON.stringify(res));
 
                     if (res.data === true) {
                         alert("과제 등록이 완료되었습니다.");
@@ -177,7 +174,7 @@ const ModalProjectDetail = (props) => {
             axios.post("/tut/updateTutorProject", formData)
                 .then((res) => {
                     // {"data":true,"status":200,"statusText":"OK"
-                    console.log("updateProject() result console : " + JSON.stringify(res));
+                    // console.log("updateProject() result console : " + JSON.stringify(res));
 
                     if (res.data === true) {
                         alert("과제 수정이 완료되었습니다.");
@@ -202,7 +199,7 @@ const ModalProjectDetail = (props) => {
             axios.get("/tut/deleteTutorProject/" + props.id)
                 .then((res) => {
                     // {"data":true,"status":200,"statusText":"OK"
-                    console.log("deleteProject() result console : " + JSON.stringify(res));
+                    // console.log("deleteProject() result console : " + JSON.stringify(res));
 
                     if (res.data === true) {
                         alert("과제가 삭제되었습니다.");
@@ -211,7 +208,9 @@ const ModalProjectDetail = (props) => {
                 })
                 .catch((err) => {
                     console.log("deleteProject() result error : " + err.message);
-                    alert(err.message);
+                    // alert(err.message);
+                    alert("과제를 삭제할 수 없습니다.");
+                    close();
                 });
         }
     }
@@ -220,10 +219,9 @@ const ModalProjectDetail = (props) => {
         
         let url = "/serverfile/project/tutor/" + fileName;
 
-        console.log("fileUrl : " + fileUrl);
-        console.log("fileName : " + fileName);
-        console.log("url : " + url);
-
+        // console.log("fileUrl : " + fileUrl);
+        // console.log("fileName : " + fileName);
+        // console.log("url : " + url);
 
         // 파일 다운로드를 위한 fetch 요청
         if (window.confirm("다운로드 하시겠습니까?")) {
@@ -358,7 +356,6 @@ const ModalProjectDetail = (props) => {
                             <tr>
                                 <th>마감일<span className="font_red">*</span></th>
                                 <td colSpan="2">
-                                    {console.log("#### " + selinfo?.deadLineDate)}
                                     <input 
                                         type ="date"
                                         className="form-control input-sm"

@@ -61,7 +61,7 @@ const LectureStudentInfo = () => {
                 // "data":{"loginId":"bbb123"
                 //         "lectureList":[{"lec_id":1,"lec_name":"자바의이해",
                 //         "pageSize":10,"totalCount":15
-                console.log("searchLecInfoList() result console : " + JSON.stringify(res));
+                // console.log("searchLecInfoList() result console : " + JSON.stringify(res));
 
                 setLecTotalCnt(res.data.totalCount);
                 setLecList(res.data.lectureList);                

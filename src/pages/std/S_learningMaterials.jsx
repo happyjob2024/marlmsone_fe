@@ -51,7 +51,7 @@ const S_learningMaterials = () => {
             .then((res) => {
                 // {"data":{"learningMatList":[{"learn_data_id":1,"lec_id":1,
                 //          ],"pageSize":5,"totalCount":13,"currentPage":1}                
-                console.log("searchLearnMatList() result console : " + JSON.stringify(res));
+                // console.log("searchLearnMatList() result console : " + JSON.stringify(res));
                 
                 setStdLearnMatTotalCnt(res.data.totalCount);
                 setStdLearnMatList(res.data.learningMatList);

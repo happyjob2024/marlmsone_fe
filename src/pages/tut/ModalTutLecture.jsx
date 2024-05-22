@@ -10,13 +10,12 @@ const ModalTutLecture = (props) => {
 
         if (props.tutorId !== null && props.tutorId !== "" &&
             props.lecId !== null && props.lecId !== "") {
-            console.log("ModalLecture> props.tutorId="+props.tutorId);
-            console.log("ModalLecture> props.lecId="+props.lecId);
-
+            // console.log("ModalLecture> props.tutorId="+props.tutorId);
+            // console.log("ModalLecture> props.lecId="+props.lecId);
             searchLecInfoDetail(props.tutorId, props.lecId);
-            return () => {
-                setSelinfo({});
-            }
+        }
+         return () => {
+            setSelinfo({});
         }
     }, [props.tutorId, props.lecId]);
 
@@ -38,7 +37,7 @@ const ModalTutLecture = (props) => {
         axios.post("/tut/tutorLectureDetail.do", params)
             .then((res) => {
                 // {"data":{"detailTutorLecture":{"lec_id":1,"lec_name":"자바의이해",
-                console.log("searchLecDetail() result console : " + JSON.stringify(res));
+                // console.log("searchLecDetail() result console : " + JSON.stringify(res));
 
                 setSelinfo(res.data.detailTutorLecture);
             })

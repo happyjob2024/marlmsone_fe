@@ -38,7 +38,7 @@ const ProjectControl = () => {
                 //                          "lecrm_id":5,"lecrm_name":"8 강의실2",
                 //                          "start_date":1709564400000,"end_date":1718377200000,
                 //                          "pre_pnum":0,"max_pnum":50,"process_day":0},
-                console.log("searchTutLecList() result console : " + JSON.stringify(res));
+                // console.log("searchTutLecList() result console : " + JSON.stringify(res));
 
                 setLecList(res.data.lectureList);
                 setLecDetail(res.data.lectureList[0]);
@@ -73,7 +73,7 @@ const ProjectControl = () => {
                 //                                "lecrm_id":5,"lecrm_name":"8 강의실2",
                 //                                "start_date":1709564400000,"end_date":1718377200000,
                 //                                "pre_pnum":0,"max_pnum":50,"process_day":0}}
-                console.log("searchLecDetail() result console : " + JSON.stringify(res));
+                // console.log("searchLecDetail() result console : " + JSON.stringify(res));
                 setLecDetail(res.data.detailTutorLecture);
             })
             .catch((err) => {
