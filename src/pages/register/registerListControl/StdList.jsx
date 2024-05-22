@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useQueryParam } from "../../../hook/useQueryParam ";
+import { useQueryParam } from "../../../hook/useQueryParam.js";
 import axios from "axios";
 
 const StdList = () => {
